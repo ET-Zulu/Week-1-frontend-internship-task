@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <title>Focus Flow - Task Manager</title>
+  </head>
+  <body>
+    <header class="header">
+      <h1 class="logo">Focus Flow</h1>
+      <button type="button" id="addTaskBtn">Add Task</button>
+    </header>
+
+    <main>
+      <section class="hero">
+        <p>Today's Focus</p>
+        <h2>
+          Keep your flow
+          <span>effortless.</span>
+        </h2>
+      </section>
+
+      <section class="filters">
+        <div>
+          <button class="selected_filter" type="button">All</button>
+          <button type="button">Active</button>
+          <button type="button">Completed</button>
+        </div>
+      </section>
+
+      <section class="list"></section>
+
+      <section hidden class="empty_state">
+        <h3>No tasks for today!</h3>
+        <p>
+          Take a moment for yourself or start planning your next big project.
+        </p>
+      </section>
+    </main>
+
+    <div id="addTaskModalOverlay"></div>
+    <section id="addTaskModal" aria-label="Add task">
+      <header class="modalHeader">
+        <h3 class="modalHeader">New Task</h3>
+        <p class="modalDetail">Organize your thoughts into flow.</p>
+      </header>
+
+      <form>
+        <div>
+          <label for="taskTitle">What needs to be done?</label>
+          <input
+            id="taskTitle"
+            name="taskTitle"
+            type="text"
+            placeholder="e.g. Design user interview script"
+          />
+        </div>
+
+        <div>
+          <label for="taskDeadline">Deadline</label>
+          <input id="taskDeadline" name="taskDeadline" type="datetime-local" />
+        </div>
+
+        <div class="form_actions">
+          <button class="cancel" type="button">Cancel</button>
+          <button class="add_task" type="submit">Add Task</button>
+        </div>
+      </form>
+    </section>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
