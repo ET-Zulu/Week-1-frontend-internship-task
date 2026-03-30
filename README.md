@@ -18,7 +18,7 @@ Open `index.html` in any modern browser.
 
 ## Screenshot
 
-![Screenshot 1](asset/Screenshot 1.png)
+![Screenshot 1](asset/Screenshot1.png)
 
 ## Features
 
