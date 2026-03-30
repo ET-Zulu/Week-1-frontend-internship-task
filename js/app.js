@@ -1,3 +1,4 @@
+const taskForm = document.getElementById('task-form');
 const taskInput = document.getElementById('taskInput');
 const addBtn = document.getElementById('addBtn');
 const taskList = document.getElementById('taskList');
@@ -46,12 +47,12 @@ function updateEmptyState() {
 
 function isValidTask(title) {
     if (!title.trim()) {
-        alert('Please enter a task title');
+        alert('Task cannot be empty!');
         return false;
     }
     
     if (title.trim().length < 3) {
-        alert('Task title must be at least 3 characters long');
+        alert('Task must be at least 3 characters long!');
         return false;
     }
     
@@ -112,21 +113,23 @@ function createTaskElement(task) {
     li.setAttribute('data-id', task.id);
     
     li.innerHTML = `
+        <input 
+            type="checkbox" 
+            class="task-checkbox" 
+            ${task.completed ? 'checked' : ''}
+            onchange="toggleComplete(${task.id})"
+        >
         <div class="task-content">
             <div class="task-title">${escapeHtml(task.title)}</div>
             <div class="task-timestamp">Created: ${task.timestamp}</div>
         </div>
         <div class="task-actions">
-            <button class="toggle-btn">${task.completed ? 'Undo' : 'Complete'}</button>
-            <button class="delete-btn">Delete</button>
+            <button class="toggle-btn" onclick="toggleComplete(${task.id})">
+                ${task.completed ? 'Undo' : 'Complete'}
+            </button>
+            <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
         </div>
     `;
-    
-    const toggleBtn = li.querySelector('.toggle-btn');
-    const deleteBtn = li.querySelector('.delete-btn');
-    
-    toggleBtn.addEventListener('click', () => toggleComplete(task.id));
-    deleteBtn.addEventListener('click', () => deleteTask(task.id));
     
     return li;
 }
@@ -162,7 +165,7 @@ function addTask() {
         completed: false
     };
     
-    tasks.push(newTask);
+    tasks.unshift(newTask);
     taskInput.value = '';
     taskInput.focus();
     
@@ -170,11 +173,9 @@ function addTask() {
     saveToLocalStorage();
 }
 
-addBtn.addEventListener('click', addTask);
-taskInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        addTask();
-    }
+taskForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    addTask();
 });
 
 filterBtns.forEach(btn => {
