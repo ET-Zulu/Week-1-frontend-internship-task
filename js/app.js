@@ -1,17 +1,8 @@
 "use strict";
 
-/*
-  Simple scaffold version.
-  You fill in each TODO body step by step.
-*/
-
-// -----------------------------
-// App State
-// -----------------------------
-
 const state = {
   tasks: [],
-  activeFilter: "all", // "all" | "active" | "completed"
+  activeFilter: "all",
 };
 
 // -----------------------------
@@ -42,17 +33,11 @@ function initApp() {
 }
 
 function bindEvents() {
-  // TODO: Open modal
   addTaskButton.addEventListener("click", openModal);
-  // TODO: Close modal from cancel button
   cancelButton.addEventListener("click", closeModal);
-  // TODO: Close modal from overlay click
   overlay.addEventListener("click", closeModal);
-  // TODO: Handle add-task form submit
   form.addEventListener("submit", onFormSubmit);
-  // TODO: Handle filter button clicks
   filtersContainer.addEventListener("click", onFilterClick);
-  // TODO: Handle task actions using event delegation
   listContainer.addEventListener("click", onTaskListClick);
 }
 
@@ -61,67 +46,60 @@ function bindEvents() {
 // -----------------------------
 
 function onFormSubmit(event) {
-  // 1) event.preventDefault()
   event.preventDefault();
 
-  // 2) read titleInput.value and deadlineInput.value
   const title = titleInput.value.trim();
   const deadline = deadlineInput.value;
 
-  // 3) validate title
-  if (!validateTaskTitle(title).valid) {
-    showValidationError(validateTaskTitle(title).message);
+  const validation = validateTaskTitle(title);
+  if (!validation.valid) {
+    showValidationError(validation.message);
     return;
   }
 
-  // 4) create task object
+  clearValidationError();
+
   const newTask = createTask(title, deadline);
 
-  // 5) push task to state.tasks
   state.tasks.push(newTask);
 
-  // 6) clear form
   clearForm();
 
-  // 7) close modal
   closeModal();
 
-  // 8) renderApp()
   renderApp();
-  void event;
 }
 
 function onFilterClick(event) {
-  // 1) detect clicked button
-  const clickedBtn = event.target;
+  const clickedBtn = event.target.closest("button");
+  if (!clickedBtn) {
+    return;
+  }
 
-  // 2) update state.activeFilter
   state.activeFilter = clickedBtn.innerHTML.toLowerCase();
 
-  // 3) renderApp()
   renderApp();
-
-  void event;
 }
 
 function onTaskListClick(event) {
-  // 1) detect action (toggle or delete)
-  const action = event.target;
+  const action = event.target.closest("[data-action]");
+  if (!action) {
+    return;
+  }
 
-  // 2) read task id from clicked element dataset
-  const taskId = action.parentElement.id;
-  const clickType = action.id;
+  const taskId = action.dataset.taskId;
+  const clickType = action.dataset.action;
+  if (!taskId || !clickType) {
+    return;
+  }
 
-  // 3) call toggleTaskById or deleteTaskById
-  if (clickType == "check") {
+  if (clickType === "toggle") {
     toggleTaskById(taskId);
-  } else if (clickType == "delete") {
+  } else if (clickType === "delete") {
     deleteTaskById(taskId);
   }
-  console.log({ clickType, taskId });
-  // 4) renderApp()
+
   renderApp();
-  void event;
 }
 
 // -----------------------------
@@ -129,7 +107,6 @@ function onTaskListClick(event) {
 // -----------------------------
 
 function createTask(title, dueAtValue) {
-  // TODO: return task object with id, title, createdAt, dueAt, completed
   return {
     id: generateTaskId(),
     title,
@@ -153,26 +130,20 @@ function validateTaskTitle(title) {
 }
 
 function toggleTaskById(taskId) {
-  // TODO: find task in state.tasks and flip completed
   const task = state.tasks.find((t) => t.id === taskId);
   if (task) {
     task.completed = !task.completed;
   }
-  void taskId;
 }
 
 function deleteTaskById(taskId) {
-  // TODO: remove task from state.tasks
   const taskIndex = state.tasks.findIndex((t) => t.id === taskId);
   if (taskIndex !== -1) {
     state.tasks.splice(taskIndex, 1);
   }
-
-  void taskId;
 }
 
 function getVisibleTasks() {
-  // TODO: filter by state.activeFilter
   const tasks = state.tasks.filter((t) => {
     if (state.activeFilter === "active") {
       return !t.completed;
@@ -186,9 +157,11 @@ function getVisibleTasks() {
 }
 
 function generateTaskId() {
-  // TODO: return unique id string
-  const uuid = Date.now().toString();
-  return uuid;
+  if (window.crypto && typeof window.crypto.randomUUID === "function") {
+    return window.crypto.randomUUID();
+  }
+
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
 // -----------------------------
@@ -216,7 +189,7 @@ function showValidationError(message) {
 }
 
 function clearValidationError() {
-  // TODO: clear validation message from UI
+  // Validation currently uses alert, so there is no persistent message to clear.
 }
 
 // -----------------------------
@@ -230,32 +203,28 @@ function renderApp() {
 }
 
 function renderTasks() {
-  // 1) clear listContainer
   listContainer.innerHTML = "";
 
-  // 2) get visible tasks
   const tasks = getVisibleTasks();
 
-  // 3) create HTML string per task
   for (const task of tasks) {
     const taskHtml = createTaskElement(task);
-    // 4) append to listContainer
     listContainer.insertAdjacentHTML("beforeend", taskHtml);
   }
 }
 
 function renderEmptyState() {
-  // TODO: if no visible tasks, show emptyState, else hide it
   const visibleTasks = getVisibleTasks();
   if (visibleTasks.length === 0) {
+    emptyState.hidden = false;
     emptyState.style.display = "block";
   } else {
+    emptyState.hidden = true;
     emptyState.style.display = "none";
   }
 }
 
 function renderFilters() {
-  // TODO: set selected_filter class on active filter button only
   filterButtons.forEach((btn) => {
     if (btn.innerHTML.toLowerCase() === state.activeFilter) {
       btn.classList.add("selected_filter");
@@ -266,11 +235,19 @@ function renderFilters() {
 }
 
 function createTaskElement(task) {
+  const safeTitle = escapeHtml(task.title);
+
   const taskHTML = `
     <article class="task_item">
-      <div id="${task.id}" class="article_btn mark_complete ${task.completed ? "marked" : ""}">
+      <div
+        class="article_btn mark_complete ${task.completed ? "marked" : ""}"
+        data-action="toggle"
+        data-task-id="${task.id}"
+        role="button"
+        tabindex="0"
+        aria-label="Toggle task completion"
+      >
         <svg
-        id="check"
           class="mark_sign"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -287,15 +264,21 @@ function createTaskElement(task) {
       </div>
       
       <div>
-        <h3 class="task_title">${task.title}</h3>
+        <h3 class="task_title">${safeTitle}</h3>
         <p class="task_detail">Created: ${formatCreatedDate(task.createdAt)}</p>
-        <p class="task_detail">Due: ${task.dueAt ? formatDueDate(task.dueAt) : "--"}</p>
+        <p class="task_detail">Due: ${formatDueDate(task.dueAt)}</p>
       </div>
       
       
-      <div id="${task.id}" class="article_btn delete">
+      <div
+        class="article_btn delete"
+        data-action="delete"
+        data-task-id="${task.id}"
+        role="button"
+        tabindex="0"
+        aria-label="Delete task"
+      >
         <svg
-        id="delete"
           class="delete_btn"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -314,6 +297,15 @@ function createTaskElement(task) {
     `;
 
   return taskHTML;
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
 function formatCreatedDate(isoDate) {
@@ -356,8 +348,21 @@ function formatCreatedDate(isoDate) {
 }
 
 function formatDueDate(isoDate) {
-  // TODO: return readable "Due" text
-  return isoDate || "No deadline";
+  if (!isoDate) {
+    return "--";
+  }
+
+  const dueDate = new Date(isoDate);
+  if (Number.isNaN(dueDate.getTime())) {
+    return "No deadline";
+  }
+
+  return dueDate.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 // -----------------------------
