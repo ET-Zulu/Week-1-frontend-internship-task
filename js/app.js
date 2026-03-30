@@ -14,3 +14,11 @@ window.onclick = function (event) {
     overlay.style.display = "none";
   }
 };
+
+cancelBtn = document.querySelector(".cancel");
+cancelBtn.addEventListener("click", function () {
+  const modal = document.getElementById("addTaskModal");
+  modal.style.display = "none";
+  const overlay = document.getElementById("addTaskModalOverlay");
+  overlay.style.display = "none";
+});
