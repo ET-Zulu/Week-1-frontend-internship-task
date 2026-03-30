@@ -115,3 +115,86 @@ h1 {
         font-size: 24px;
     }
 }
+
+
+
+.task-item {
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.task-item.completed {
+    background: #f0f0f0;
+    opacity: 0.7;
+}
+
+.task-item.completed .task-title {
+    text-decoration: line-through;
+    color: #666;
+}
+
+.task-content {
+    flex: 1;
+}
+
+.task-title {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.task-timestamp {
+    font-size: 12px;
+    color: #999;
+}
+
+.task-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.toggle-btn, .delete-btn {
+    padding: 4px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.toggle-btn {
+    background: #28a745;
+    color: white;
+}
+
+.toggle-btn:hover {
+    background: #218838;
+}
+
+.delete-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #c82333;
+}
+
+@media (max-width: 600px) {
+    .task-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .task-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}

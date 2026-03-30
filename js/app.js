@@ -1,3 +1,4 @@
+
 const taskInput = document.getElementById('taskInput');
 const addBtn = document.getElementById('addBtn');
 const taskList = document.getElementById('taskList');
@@ -7,18 +8,26 @@ const filterBtns = document.querySelectorAll('.filter-btn');
 let tasks = [];
 let currentFilter = 'all';
 let taskIdCounter = 1;
+
+
 function getTimestamp() {
     const now = new Date();
     return now.toLocaleString();
 }
+
 function updateEmptyState() {
-    if (tasks.length === 0) {
+    const visibleTasks = tasks.filter(task => {
+        if (currentFilter === 'active') return !task.completed;
+        if (currentFilter === 'completed') return task.completed;
+        return true;
+    });
+    
+    if (visibleTasks.length === 0) {
         emptyState.classList.add('show');
     } else {
         emptyState.classList.remove('show');
     }
 }
-
 
 function isValidTask(title) {
     if (!title.trim()) {
@@ -32,6 +41,49 @@ function isValidTask(title) {
     }
     
     return true;
+}
+
+
+function createTaskElement(task) {
+    const li = document.createElement('li');
+    li.className = `task-item ${task.completed ? 'completed' : ''}`;
+    li.setAttribute('data-id', task.id);
+    
+    li.innerHTML = `
+        <div class="task-content">
+            <div class="task-title">${escapeHtml(task.title)}</div>
+            <div class="task-timestamp">Created: ${task.timestamp}</div>
+        </div>
+        <div class="task-actions">
+            <button class="toggle-btn">${task.completed ? 'Undo' : 'Complete'}</button>
+            <button class="delete-btn">Delete</button>
+        </div>
+    `;
+    
+    return li;
+}
+     
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function renderTasks() {
+    taskList.innerHTML = '';
+    
+    const filteredTasks = tasks.filter(task => {
+        if (currentFilter === 'active') return !task.completed;
+        if (currentFilter === 'completed') return task.completed;
+        return true;
+    });
+    
+    filteredTasks.forEach(task => {
+        const taskElement = createTaskElement(task);
+        taskList.appendChild(taskElement);
+    });
+    
+    updateEmptyState();
 }
 
 function addTask() {
@@ -52,10 +104,9 @@ function addTask() {
     taskInput.value = '';
     taskInput.focus();
     
+    renderTasks();
     console.log('Task added:', newTask);
-    updateEmptyState();
 }
-
 
 addBtn.addEventListener('click', addTask);
 taskInput.addEventListener('keypress', (e) => {
@@ -64,5 +115,6 @@ taskInput.addEventListener('keypress', (e) => {
     }
 });
 
-updateEmptyState();
+
+renderTasks();
 console.log('Task Manager initialized');
