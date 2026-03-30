@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Focus Flow</title>
+
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="./js/app.js" defer></script>
+  </head>
+
+  <body>
+    <header class="header">
+      <span class="logo">
+        <ion-icon name="reader-outline"></ion-icon>
+      </span>
+      <h1>Focus Flow</h1>
+      <p>Stay organized, one task at a time.</p>
+    </header>
+
+    <main>
+      <form class="task--input">
+        <input
+          id="taskInput"
+          type="text"
+          placeholder="What needs to be done?"
+        />
+        <button type="submit">
+          <ion-icon name="add-outline"></ion-icon>
+          <span>Add</span>
+        </button>
+      </form>
+
+      <nav class="mini--nav">
+        <a href="#" data-filter="all">All</a>
+        <a href="#" data-filter="active">Active</a>
+        <a href="#" data-filter="completed">Completed</a>
+      </nav>
+    </main>
+
+    <section class="tasks">
+      <ul class="task-list">
+        <li class="task">
+          <input type="checkbox" />
+          <div>
+            <p>This is the first task</p>
+            <time>12:38 pm</time>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+  </body>
+</html>
