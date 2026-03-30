@@ -1,4 +1,3 @@
-
 const taskInput = document.getElementById('taskInput');
 const addBtn = document.getElementById('addBtn');
 const taskList = document.getElementById('taskList');
@@ -15,6 +14,7 @@ function getTimestamp() {
     return now.toLocaleString();
 }
 
+
 function updateEmptyState() {
     const visibleTasks = tasks.filter(task => {
         if (currentFilter === 'active') return !task.completed;
@@ -28,6 +28,7 @@ function updateEmptyState() {
         emptyState.classList.remove('show');
     }
 }
+
 
 function isValidTask(title) {
     if (!title.trim()) {
@@ -43,6 +44,33 @@ function isValidTask(title) {
     return true;
 }
 
+
+function toggleComplete(taskId) {
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+        task.completed = !task.completed;
+        renderTasks();
+        console.log('Task toggled:', task);
+    }
+}
+
+function deleteTask(taskId) {
+    const taskElement = document.querySelector(`.task-item[data-id="${taskId}"]`);
+    
+    if (taskElement) {
+        taskElement.style.transform = 'translateX(100%)';
+        taskElement.style.opacity = '0';
+        
+        setTimeout(() => {
+            tasks = tasks.filter(t => t.id !== taskId);
+            renderTasks();
+            console.log('Task deleted:', taskId);
+        }, 300);
+    } else {
+        tasks = tasks.filter(t => t.id !== taskId);
+        renderTasks();
+    }
+}
 
 function createTaskElement(task) {
     const li = document.createElement('li');
@@ -60,14 +88,22 @@ function createTaskElement(task) {
         </div>
     `;
     
+ 
+    const toggleBtn = li.querySelector('.toggle-btn');
+    const deleteBtn = li.querySelector('.delete-btn');
+    
+    toggleBtn.addEventListener('click', () => toggleComplete(task.id));
+    deleteBtn.addEventListener('click', () => deleteTask(task.id));
+    
     return li;
 }
-     
+
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
+
 
 function renderTasks() {
     taskList.innerHTML = '';
@@ -107,6 +143,7 @@ function addTask() {
     renderTasks();
     console.log('Task added:', newTask);
 }
+
 
 addBtn.addEventListener('click', addTask);
 taskInput.addEventListener('keypress', (e) => {
