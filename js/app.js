@@ -13,6 +13,23 @@ function getTimestamp() {
     return now.toLocaleString();
 }
 
+function saveToLocalStorage() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    localStorage.setItem('taskIdCounter', taskIdCounter);
+}
+
+function loadFromLocalStorage() {
+    const savedTasks = localStorage.getItem('tasks');
+    const savedCounter = localStorage.getItem('taskIdCounter');
+    
+    if (savedTasks) {
+        tasks = JSON.parse(savedTasks);
+    }
+    if (savedCounter) {
+        taskIdCounter = parseInt(savedCounter);
+    }
+}
+
 function updateEmptyState() {
     const visibleTasks = tasks.filter(task => {
         if (currentFilter === 'active') return !task.completed;
@@ -46,6 +63,7 @@ function toggleComplete(taskId) {
     if (task) {
         task.completed = !task.completed;
         renderTasks();
+        saveToLocalStorage();
     }
 }
 
@@ -59,10 +77,12 @@ function deleteTask(taskId) {
         setTimeout(() => {
             tasks = tasks.filter(t => t.id !== taskId);
             renderTasks();
+            saveToLocalStorage();
         }, 300);
     } else {
         tasks = tasks.filter(t => t.id !== taskId);
         renderTasks();
+        saveToLocalStorage();
     }
 }
 
@@ -147,6 +167,7 @@ function addTask() {
     taskInput.focus();
     
     renderTasks();
+    saveToLocalStorage();
 }
 
 addBtn.addEventListener('click', addTask);
@@ -162,4 +183,5 @@ filterBtns.forEach(btn => {
     });
 });
 
+loadFromLocalStorage();
 renderTasks();
