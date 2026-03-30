@@ -8,12 +8,10 @@ let tasks = [];
 let currentFilter = 'all';
 let taskIdCounter = 1;
 
-
 function getTimestamp() {
     const now = new Date();
     return now.toLocaleString();
 }
-
 
 function updateEmptyState() {
     const visibleTasks = tasks.filter(task => {
@@ -29,7 +27,6 @@ function updateEmptyState() {
     }
 }
 
-
 function isValidTask(title) {
     if (!title.trim()) {
         alert('Please enter a task title');
@@ -44,13 +41,11 @@ function isValidTask(title) {
     return true;
 }
 
-
 function toggleComplete(taskId) {
     const task = tasks.find(t => t.id === taskId);
     if (task) {
         task.completed = !task.completed;
         renderTasks();
-        console.log('Task toggled:', task);
     }
 }
 
@@ -64,12 +59,31 @@ function deleteTask(taskId) {
         setTimeout(() => {
             tasks = tasks.filter(t => t.id !== taskId);
             renderTasks();
-            console.log('Task deleted:', taskId);
         }, 300);
     } else {
         tasks = tasks.filter(t => t.id !== taskId);
         renderTasks();
     }
+}
+
+function setFilter(filter) {
+    currentFilter = filter;
+    
+    filterBtns.forEach(btn => {
+        if (btn.dataset.filter === filter) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    renderTasks();
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 function createTaskElement(task) {
@@ -88,7 +102,6 @@ function createTaskElement(task) {
         </div>
     `;
     
- 
     const toggleBtn = li.querySelector('.toggle-btn');
     const deleteBtn = li.querySelector('.delete-btn');
     
@@ -97,13 +110,6 @@ function createTaskElement(task) {
     
     return li;
 }
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
 
 function renderTasks() {
     taskList.innerHTML = '';
@@ -141,9 +147,7 @@ function addTask() {
     taskInput.focus();
     
     renderTasks();
-    console.log('Task added:', newTask);
 }
-
 
 addBtn.addEventListener('click', addTask);
 taskInput.addEventListener('keypress', (e) => {
@@ -152,6 +156,10 @@ taskInput.addEventListener('keypress', (e) => {
     }
 });
 
+filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        setFilter(btn.dataset.filter);
+    });
+});
 
 renderTasks();
-console.log('Task Manager initialized');
