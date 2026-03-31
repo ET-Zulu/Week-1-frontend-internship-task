@@ -26,7 +26,12 @@
 
       <main>
         <form class="task--input">
-          <input type="text" placeholder="What needs to be done?" />
+          <input
+            type="text"
+            class="input"
+            value=""
+            placeholder="What needs to be done?"
+          />
           <button type="submit" class="btn btn--add">
             <ion-icon name="add-outline"></ion-icon>
             <span>Add</span>
@@ -40,15 +45,7 @@
         </nav>
       </main>
       <section class="tasks">
-        <ul class="task-list">
-          <li class="task">
-            <input type="checkbox" />
-            <div class="task--content">
-              <p>This is the first task</p>
-              <time>12:38 pm</time>
-            </div>
-          </li>
-        </ul>
+        <ul class="task-list"></ul>
       </section>
 
       <script

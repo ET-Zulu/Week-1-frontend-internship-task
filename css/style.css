@@ -124,7 +124,6 @@ body {
 }
 
 .tasks {
-  background-color: #eaeaea;
   padding: 1.2rem 1rem;
   width: 40rem;
   border-radius: 0.5rem;
@@ -132,12 +131,19 @@ body {
 
 .task-list {
   list-style: none;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.5rem;
 }
 .task {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 2rem;
+  background-color: #eaeaea;
+  padding: 1.2rem 1rem;
+  width: 40rem;
+  border-radius: 0.5rem;
 }
 .task--content {
   display: flex;
@@ -149,4 +155,5 @@ body {
 .task input[type="checkbox"] {
   width: 1.6rem;
   height: 1.6rem;
+  cursor: pointer;
 }
