@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Focus Flow Task Manager</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+  <div class="app">
+
+
+    <h1>Focus Flow</h1>
+
+
+
+    <!-- ADD TASK -->
+
+    <div class="task-input">
+
+      <input id="taskInput" type="text" placeholder="Enter task...">
+
+      <button id="addBtn">Add Task</button>
+
+    </div>
+
+
+
+    <!-- FILTER -->
+
+    <div class="filters">
+
+      <button class="filter" data-filter="all">All</button>
+
+      <button class="filter" data-filter="active">Active</button>
+
+      <button class="filter" data-filter="completed">Completed</button>
+
+    </div>
+
+
+
+    <!-- TASK LIST -->
+
+    <div id="taskList">
+
+      <p class="empty">No tasks for today!</p>
+
+    </div>
+
+
+  </div>
+
+
+
+  <script src="js/App.js"></script>
+
+</body>
+
+</html>
