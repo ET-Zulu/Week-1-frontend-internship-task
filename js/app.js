@@ -3,27 +3,34 @@ const addBtn = document.querySelector(".btn--add");
 const remove = document.querySelector(".btn--remove");
 const taskList = document.querySelector(".task-list");
 const miniNav = document.querySelector(".mini--nav");
+const noItem = document.querySelector(".message");
 
 let taskes = [];
-const completedTask = [];
-taskList.innerHTML = "";
+let completedTask = [];
 
 /////Adding the task to the DOM
 
 function renderTaskList(taskes) {
   taskList.innerHTML = "";
 
-  taskes?.forEach((task) => {
-    const li = document.createElement("li");
-    li.className = "task";
-    li.dataset.id = task.id;
+  if (taskes.length === 0) {
+    noItem.style.display = "flex";
+    return;
+  } else {
+    noItem.style.display = "none";
+  }
+  if (taskes.length > 0)
+    taskes?.forEach((task) => {
+      const li = document.createElement("li");
+      li.className = "task";
+      li.dataset.id = task.id;
 
-    li.innerHTML = `
+      li.innerHTML = `
     <div class='task--wrapper'>
-    <input type="checkbox"class='check-box' />
+    <input type="checkbox" class='check-box' ${task.completed ? "checked" : ""}   />
     <div class="task--content">
 
-        <p class="task-desc">${task.title}</p>
+        <p class="task-desc" }>${task.title}</p>
         <time>${task.Timestamp}</time>
 
         </div>
@@ -33,8 +40,8 @@ function renderTaskList(taskes) {
      
     `;
 
-    taskList.appendChild(li);
-  });
+      taskList.appendChild(li);
+    });
 }
 
 ////Adding new Task to array of taskes
@@ -53,10 +60,6 @@ function handleAddTask(e) {
     }).format(Date.now()),
     completed: false,
   };
-
-  if (newTask.completed === true) {
-    completedTask.push(newTask);
-  }
 
   taskes.unshift(newTask);
 
@@ -81,58 +84,67 @@ miniNav.addEventListener("click", function (e) {
   link.classList.add("nav--active");
 });
 
-taskList.addEventListener("click", (e) => {
-  const checkbox = e.target.closest("input[type='checkbox']");
-  if (!checkbox) return;
-
-  const li = checkbox.closest(".task");
-  const id = Number(li.dataset.id);
-});
-
-///// Handling the line througn property
-taskList.addEventListener("change", function (e) {
-  if (e.target.classList.contains("check-box")) {
-    const isChecked = e.target.checked;
-    const task = e.target.closest(".task");
-    const taskDesc = task.querySelector(".task-desc");
-
-    const id = +task.dataset.id;
-
-    const completArray = taskes.find((task) => task.id == id);
-    console.log("INITIAL:", completedTask);
-    if (isChecked) {
-      taskDesc.style.textDecoration = "line-through";
-      completedTask.unshift(completArray);
-    } else {
-      taskDesc.style.textDecoration = "none";
-
-      const index = completedTask.findIndex((t) => t.id == id);
-      if (index !== -1) {
-        completedTask.splice(index, 1);
-      }
-    }
-  }
-  // console.log(completedTask);
-});
-
 /////Handling the delete task
 
-// function handleDelete(e) {}
 taskList.addEventListener("click", (e) => {
   if (!e.target.classList.contains("remove")) return;
   const task = e.target.closest(".task");
   const id = +task.dataset.id;
+  // console.log(task.completed);
 
   if (e.target.classList.contains("remove")) {
     taskes = taskes.filter((task) => task.id !== id);
     renderTaskList(taskes);
-    console.log(taskes);
+    ////For completed task
+    completedTask = completedTask.filter((task) => task.id !== id);
+    renderTaskList(completedTask);
   }
 });
-if (taskes.length === 0) {
-  const noItem = document.createElement("p");
-  noItem.textContent = "There is no Task to show!!";
-  noItem.style.fontSize = "18px";
-  noItem.style.paddingTop = "20px";
-  taskList.appendChild(noItem);
-}
+
+// Handle task completion (checkbox change)
+taskList.addEventListener("change", function (e) {
+  if (!e.target.classList.contains("check-box")) return;
+
+  const task = e.target.closest(".task");
+  const taskDesc = task.querySelector(".task-desc");
+  const id = +task.dataset.id;
+
+  // Update the main task list
+  const currentTask = taskes.find((t) => t.id === id);
+  currentTask.completed = e.target.checked;
+
+  // Update line-through style
+  taskDesc.style.textDecoration = currentTask.completed
+    ? "line-through"
+    : "none";
+
+  // Update completedTask array
+  if (currentTask.completed) {
+    if (!completedTask.some((t) => t.id === id)) {
+      completedTask.unshift(currentTask);
+    }
+  }
+
+  console.log("Completed tasks:", completedTask);
+});
+
+// Handle miniNav filter clicks
+miniNav.addEventListener("click", (e) => {
+  const link = e.target.closest("a");
+
+  if (!link) return;
+
+  const href = link.getAttribute("href");
+
+  if (href === "all") {
+    renderTaskList(taskes);
+  }
+  if (href === "active") {
+    const active = taskes.filter((task) => task.completed == false);
+
+    renderTaskList(active);
+  }
+  if (href === "completed") {
+    renderTaskList(completedTask);
+  }
+});

@@ -29,8 +29,9 @@
           <input
             type="text"
             class="input"
-            value=""
+            autofocus
             placeholder="What needs to be done?"
+            required
           />
           <button type="submit" class="btn btn--add">
             <ion-icon name="add-outline"></ion-icon>
@@ -39,12 +40,17 @@
         </form>
 
         <nav class="mini--nav">
-          <a href="#" class="nav--active">All</a>
-          <a href="#">Active</a>
-          <a href="#">Completed</a>
+          <a href="all" class="nav--active">All</a>
+          <a href="active">Active</a>
+          <a href="completed">Completed</a>
         </nav>
       </main>
       <section class="tasks">
+        <div class="message">
+          <ion-icon name="warning-outline"></ion-icon>
+
+          <p class="no-item">There is no Task to show!!</p>
+        </div>
         <ul class="task-list"></ul>
       </section>
 
