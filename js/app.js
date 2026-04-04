@@ -7,8 +7,6 @@ const noItem = document.querySelector(".message");
 
 let taskes = [];
 let currentFilter = "all";
-// let completedTask = [];
-
 /////Adding the task to the DOM
 function showMessage(taskes) {
   if (taskes.length === 0) {
@@ -33,7 +31,11 @@ function renderTaskList(taskes) {
     <input type="checkbox" class='check-box' ${task.completed ? "checked" : ""}   />
     <div class="task--content">
 
-        <p class="task-desc" }>${task.title}</p>
+        <p class="task-desc" style="text-decoration: ${
+          task.completed ? "line-through" : "none"
+        }">
+  ${task.title}
+</p>
         <time>${task.Timestamp}</time>
 
         </div>
@@ -127,11 +129,8 @@ taskList.addEventListener("change", function (e) {
 
   currentTask.completed = e.target.checked;
 
-  // Update line-through style
-  taskDesc.style.textDecoration = currentTask.completed
-    ? "line-through"
-    : "none";
-  console.log("tasks:", taskes);
+  renderTaskList(getFilteredTasks());
+  // console.log("tasks:", taskes);
 });
 
 // Handle miniNav filter clicks
@@ -156,5 +155,3 @@ function getFilteredTasks() {
 
   return taskes; // all
 }
-
-// const anchor=document.querySelector()
