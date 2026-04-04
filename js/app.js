@@ -6,19 +6,22 @@ const miniNav = document.querySelector(".mini--nav");
 const noItem = document.querySelector(".message");
 
 let taskes = [];
-let completedTask = [];
+let currentFilter = "all";
+// let completedTask = [];
 
 /////Adding the task to the DOM
-
-function renderTaskList(taskes) {
-  taskList.innerHTML = "";
-
+function showMessage(taskes) {
   if (taskes.length === 0) {
     noItem.style.display = "flex";
     return;
   } else {
     noItem.style.display = "none";
   }
+}
+
+function renderTaskList(taskes) {
+  taskList.innerHTML = "";
+  showMessage(taskes);
   if (taskes.length > 0)
     taskes?.forEach((task) => {
       const li = document.createElement("li");
@@ -64,7 +67,12 @@ function handleAddTask(e) {
   taskes.unshift(newTask);
 
   renderTaskList(taskes);
+  // const span = document.createElement("span");
 
+  // span.className = "task--length";
+
+  // span.innerText = `${taskes.length}`;
+  // miniNav.appendChild(span);
   taskInput.value = "";
 }
 addBtn.addEventListener("click", (e) => handleAddTask(e));
@@ -88,17 +96,22 @@ miniNav.addEventListener("click", function (e) {
 
 taskList.addEventListener("click", (e) => {
   if (!e.target.classList.contains("remove")) return;
-  const task = e.target.closest(".task");
-  const id = +task.dataset.id;
-  // console.log(task.completed);
 
-  if (e.target.classList.contains("remove")) {
+  const taskEl = e.target.closest(".task");
+  if (!taskEl) return;
+
+  const id = +taskEl.dataset.id;
+
+  // add animation class
+  taskEl.classList.add("removing");
+
+  // wait for animation to finish
+  setTimeout(() => {
     taskes = taskes.filter((task) => task.id !== id);
-    renderTaskList(taskes);
-    ////For completed task
-    completedTask = completedTask.filter((task) => task.id !== id);
-    renderTaskList(completedTask);
-  }
+    // taskes = taskes.filter((task) => task.completed !== true);
+
+    renderTaskList(getFilteredTasks());
+  }, 300);
 });
 
 // Handle task completion (checkbox change)
@@ -111,40 +124,37 @@ taskList.addEventListener("change", function (e) {
 
   // Update the main task list
   const currentTask = taskes.find((t) => t.id === id);
+
   currentTask.completed = e.target.checked;
 
   // Update line-through style
   taskDesc.style.textDecoration = currentTask.completed
     ? "line-through"
     : "none";
-
-  // Update completedTask array
-  if (currentTask.completed) {
-    if (!completedTask.some((t) => t.id === id)) {
-      completedTask.unshift(currentTask);
-    }
-  }
-
-  console.log("Completed tasks:", completedTask);
+  console.log("tasks:", taskes);
 });
 
 // Handle miniNav filter clicks
 miniNav.addEventListener("click", (e) => {
+  e.preventDefault();
   const link = e.target.closest("a");
-
   if (!link) return;
 
-  const href = link.getAttribute("href");
+  currentFilter = link.getAttribute("href");
 
-  if (href === "all") {
-    renderTaskList(taskes);
-  }
-  if (href === "active") {
-    const active = taskes.filter((task) => task.completed == false);
-
-    renderTaskList(active);
-  }
-  if (href === "completed") {
-    renderTaskList(completedTask);
-  }
+  renderTaskList(getFilteredTasks());
 });
+
+function getFilteredTasks() {
+  if (currentFilter === "active") {
+    return taskes.filter((task) => !task.completed);
+  }
+
+  if (currentFilter === "completed") {
+    return taskes.filter((task) => task.completed);
+  }
+
+  return taskes; // all
+}
+
+// const anchor=document.querySelector()
