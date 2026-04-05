@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task Manager</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div class="container">
+    <h1>Focus Flow</h1>
+    <div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search tasks..." />
+</div>
+
+
+<div class="task-input">
+  <input type="text" id="taskInput" placeholder="Enter a task..." />
+  <div class="task-meta">
+    <input type="date" id="dueDateInput" />
+
+    <select id="priorityInput">
+      <option value="low">Low</option>
+      <option value="medium" selected>Medium</option>
+      <option value="high">High</option>
+    </select>
+  </div>
+
+    <button id="addTaskBtn">Add Task</button>
+</div>
+
+    <div id="popup" class="popup hidden"></div>
+    </div>
+    <hr />
+
+    <div class="filters">
+      <button data-filter="all">All</button>
+      <button data-filter="active">Active</button>
+      <button data-filter="completed">Completed</button>
+    </div>
+
+    <ul id="taskList"></ul>
+    <p id="emptyState">No tasks for today!</p>
+  </div>
+
+
+  <script src="js/app.js"></script>
+</body>
+</html>
